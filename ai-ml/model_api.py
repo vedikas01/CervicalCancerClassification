@@ -1,10 +1,20 @@
 from flask import Flask, request, jsonify
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import InputLayer
 import tensorflow as tf
 import cv2, numpy as np, os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+# Patch to fix batch_shape issue
+original_from_config = InputLayer.from_config
+
+def patched_from_config(config):
+    if "batch_shape" in config:
+        config["batch_input_shape"] = config.pop("batch_shape")
+    return original_from_config(config)
+
+InputLayer.from_config = patched_from_config
 
 # Load model
 MODEL_PATH = "./saved_model/cnn_mobilenetv2.h5"

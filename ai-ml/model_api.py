@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Load model
 MODEL_PATH = "./saved_model/cnn_mobilenetv2.h5"
-model = load_model(MODEL_PATH)
+model = load_model(MODEL_PATH, compile=False)
 
 # Preprocess function
 def preprocess_image(image_path):
